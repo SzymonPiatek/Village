@@ -4,6 +4,7 @@ from game.world import World
 from game.settings import *
 from game.utils import draw_text
 from game.camera import Camera
+from game.hud import Hud
 
 
 class Game:
@@ -15,6 +16,8 @@ class Game:
         self.world = World(100, 100, self.width, self.height)
 
         self.camera = Camera(self.width, self.height)
+
+        self.hud = Hud(self.width, self.height)
 
     def run(self):
         self.playing = True
@@ -36,6 +39,7 @@ class Game:
 
     def update(self):
         self.camera.update()
+        self.hud.update()
 
     def draw(self):
         self.screen.fill((0, 0, 0))
@@ -44,14 +48,7 @@ class Game:
 
         for x in range(self.world.grid_length_x):
             for y in range(self.world.grid_length_y):
-                # sq = self.world.world[x][y]["cart_rect"]
-                # rect = pg.Rect(sq[0][0], sq[0][1], TILE_SIZE, TILE_SIZE)
-                # pg.draw.rect(self.screen, (0, 0, 255), rect, 1)
-
                 render_pos = self.world.world[x][y]["render_pos"]
-                # self.screen.blit(
-                #     self.world.tiles["block"],
-                #     (render_pos[0] + self.width/2, render_pos[1] + self.height/4))
 
                 tile = self.world.world[x][y]["tile"]
                 if tile != "":
@@ -60,11 +57,7 @@ class Game:
                         (render_pos[0] + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x,
                          render_pos[1] - (self.world.tiles[tile].get_height() - TILE_SIZE) + self.camera.scroll.y))
 
-                # p = self.world.world[x][y]["iso_poly"]
-                # p = [
-                #     (x + self.width/2, y + self.height/4) for x, y in p
-                # ]
-                # pg.draw.polygon(self.screen, (255, 0, 0), p, 1)
+        self.hud.draw(self.screen)
 
         draw_text(
             screen=self.screen,
