@@ -7,16 +7,19 @@ class Hud:
         self.width = width
         self.height = height
 
-        self.hud_color = (198, 155, 93, 175)
+        self.hud_colour = (198, 155, 93, 175)
 
         self.resources_surface = pg.Surface((width, height * 0.02), pg.SRCALPHA)
-        self.resources_surface.fill(self.hud_color)
+        self.resources_rect = self.resources_surface.get_rect(topleft=(0, 0))
+        self.resources_surface.fill(self.hud_colour)
 
         self.build_surface = pg.Surface((width * 0.15, height * 0.25), pg.SRCALPHA)
-        self.build_surface.fill(self.hud_color)
+        self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.84, self.height * 0.74))
+        self.build_surface.fill(self.hud_colour)
 
         self.select_surface = pg.Surface((width * 0.3, height * 0.2), pg.SRCALPHA)
-        self.select_surface.fill(self.hud_color)
+        self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
+        self.select_surface.fill(self.hud_colour)
 
         self.images = self.load_images()
         self.tiles = self.create_build_hud()
@@ -30,6 +33,7 @@ class Hud:
         tiles = []
 
         for image_name, image in self.images.items():
+
             pos = render_pos.copy()
             image_tmp = image.copy()
             image_scale = self.scale_image(image_tmp, w=object_width)
@@ -61,15 +65,8 @@ class Hud:
                     self.selected_tile = tile
 
     def draw(self, screen):
-        if self.selected_tile is not None:
-            img = self.selected_tile["image"].copy()
-            img.set_alpha(100)
-            screen.blit(img, pg.mouse.get_pos())
-
         screen.blit(self.resources_surface, (0, 0))
-
         screen.blit(self.build_surface, (self.width * 0.84, self.height * 0.74))
-
         screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
 
         for tile in self.tiles:
@@ -81,30 +78,32 @@ class Hud:
             pos += 100
 
     def load_images(self):
-        building1 = pg.image.load("assets/graphics/building01.png").convert_alpha()
-        building2 = pg.image.load("assets/graphics/building02.png").convert_alpha()
-        rock = pg.image.load("assets/graphics/rock.png").convert_alpha()
-        tree = pg.image.load("assets/graphics/tree.png").convert_alpha()
+        building1 = pg.image.load("assets/graphics/building01.png")
+        building2 = pg.image.load("assets/graphics/building02.png")
+        tree = pg.image.load("assets/graphics/tree.png")
+        rock = pg.image.load("assets/graphics/rock.png")
 
-        return {
+        images = {
             "building1": building1,
             "building2": building2,
             "tree": tree,
             "rock": rock
         }
 
+        return images
+
     def scale_image(self, image, w=None, h=None):
         if (w is None) and (h is None):
             pass
-        else:
-            if h is None:
-                scale = w / image.get_width()
-                h = scale * image.get_height()
-            elif w is None:
-                scale = w / image.get_width()
-                h = scale * image.get_height()
-            else:
-                pass
-
+        elif h is None:
+            scale = w / image.get_width()
+            h = scale * image.get_height()
             image = pg.transform.scale(image, (int(w), int(h)))
+        elif w is None:
+            scale = h / image.get_height()
+            w = scale * image.get_width()
+            image = pg.transform.scale(image, (int(w), int(h)))
+        else:
+            image = pg.transform.scale(image, (int(w), int(h)))
+
         return image

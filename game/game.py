@@ -13,11 +13,9 @@ class Game:
         self.clock = clock
         self.width, self.height = self.screen.get_size()
 
-        self.world = World(100, 100, self.width, self.height)
-
-        self.camera = Camera(self.width, self.height)
-
         self.hud = Hud(self.width, self.height)
+        self.world = World(self.hud, 100, 100, self.width, self.height)
+        self.camera = Camera(self.width, self.height)
 
     def run(self):
         self.playing = True
@@ -40,23 +38,11 @@ class Game:
     def update(self):
         self.camera.update()
         self.hud.update()
+        self.world.update(self.camera)
 
     def draw(self):
         self.screen.fill((0, 0, 0))
-
-        self.screen.blit(self.world.grass_tiles, (self.camera.scroll.x, self.camera.scroll.y))
-
-        for x in range(self.world.grid_length_x):
-            for y in range(self.world.grid_length_y):
-                render_pos = self.world.world[x][y]["render_pos"]
-
-                tile = self.world.world[x][y]["tile"]
-                if tile != "":
-                    self.screen.blit(
-                        self.world.tiles[tile],
-                        (render_pos[0] + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x,
-                         render_pos[1] - (self.world.tiles[tile].get_height() - TILE_SIZE) + self.camera.scroll.y))
-
+        self.world.draw(self.screen, self.camera)
         self.hud.draw(self.screen)
 
         draw_text(
@@ -64,7 +50,7 @@ class Game:
             text=f"FPS: {round(self.clock.get_fps())}",
             size=25,
             color=(255, 255, 255),
-            pos=(10, 10)
+            pos=(10, 0)
         )
 
         pg.display.flip()
