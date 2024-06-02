@@ -2,6 +2,8 @@ import pygame as pg
 import sys
 from game.world import World
 from game.settings import *
+from game.utils import draw_text
+from game.camera import Camera
 
 
 class Game:
@@ -10,7 +12,9 @@ class Game:
         self.clock = clock
         self.width, self.height = self.screen.get_size()
 
-        self.world = World(10, 10, self.width, self.height)
+        self.world = World(100, 100, self.width, self.height)
+
+        self.camera = Camera(self.width, self.height)
 
     def run(self):
         self.playing = True
@@ -31,12 +35,12 @@ class Game:
                     sys.exit()
 
     def update(self):
-        pass
+        self.camera.update()
 
     def draw(self):
         self.screen.fill((0, 0, 0))
 
-        self.screen.blit(self.world.grass_tiles, (0, 0))
+        self.screen.blit(self.world.grass_tiles, (self.camera.scroll.x, self.camera.scroll.y))
 
         for x in range(self.world.grid_length_x):
             for y in range(self.world.grid_length_y):
@@ -53,13 +57,21 @@ class Game:
                 if tile != "":
                     self.screen.blit(
                         self.world.tiles[tile],
-                        (render_pos[0] + self.width/2,
-                         render_pos[1] + self.height/4 - (self.world.tiles[tile].get_height() - TILE_SIZE)))
+                        (render_pos[0] + self.world.grass_tiles.get_width() / 2 + self.camera.scroll.x,
+                         render_pos[1] - (self.world.tiles[tile].get_height() - TILE_SIZE) + self.camera.scroll.y))
 
                 # p = self.world.world[x][y]["iso_poly"]
                 # p = [
                 #     (x + self.width/2, y + self.height/4) for x, y in p
                 # ]
                 # pg.draw.polygon(self.screen, (255, 0, 0), p, 1)
+
+        draw_text(
+            screen=self.screen,
+            text=f"FPS: {round(self.clock.get_fps())}",
+            size=25,
+            color=(255, 255, 255),
+            pos=(10, 10)
+        )
 
         pg.display.flip()

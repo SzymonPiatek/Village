@@ -1,5 +1,6 @@
 import pygame as pg
 import random
+from perlin_noise import PerlinNoise
 from game.settings import *
 
 
@@ -10,7 +11,13 @@ class World:
         self.width = width
         self.height = height
 
-        self.grass_tiles = pg.Surface((self.width, self.height))
+        self.perlin_scale = self.grid_length_x / 2
+        self.noise = PerlinNoise(octaves=4, seed=random.randint(0, 100))
+
+        self.grass_tiles = pg.Surface(
+            (self.grid_length_x * TILE_SIZE * 2,
+             self.height * TILE_SIZE + 2 * TILE_SIZE)
+        ).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
 
@@ -26,8 +33,11 @@ class World:
                 render_pos = world_tile["render_pos"]
                 self.grass_tiles.blit(
                     self.tiles["block"],
-                    (render_pos[0] + self.width / 2,
-                     render_pos[1] + self.height / 4))
+                    (
+                        render_pos[0] + self.grass_tiles.get_width() / 2,
+                        render_pos[1]
+                    )
+                )
 
         return world
 
@@ -45,13 +55,17 @@ class World:
         min_y = min([y for x, y in iso_poly])
 
         r = random.randint(1, 100)
+        perlin = self.noise([grid_x / self.perlin_scale, grid_y / self.perlin_scale])
 
-        if r <= 5:
+        if (perlin >= 0.15) or (perlin <= -0.35):
             tile = "tree"
-        elif r <= 10:
-            tile = "rock"
         else:
-            tile = ""
+            if r <= 1:
+                tile = "tree"
+            elif r <= 2:
+                tile = "rock"
+            else:
+                tile = ""
 
         output = {
             "grid": [grid_x, grid_y],
@@ -69,9 +83,9 @@ class World:
         return iso_x, iso_y
 
     def load_images(self):
-        block = pg.image.load("assets/graphics/block.png")
-        rock = pg.image.load("assets/graphics/rock.png")
-        tree = pg.image.load("assets/graphics/tree.png")
+        block = pg.image.load("assets/graphics/block.png").convert_alpha()
+        rock = pg.image.load("assets/graphics/rock.png").convert_alpha()
+        tree = pg.image.load("assets/graphics/tree.png").convert_alpha()
 
         return {
             "block": block,
