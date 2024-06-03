@@ -16,6 +16,10 @@ class ResourceManager:
             "stonemasonry": {
                 "wood": 3,
                 "stone": 5
+            },
+            "warehouse": {
+                "wood": 5,
+                "stone": 5
             }
         }
 

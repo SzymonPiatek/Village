@@ -18,7 +18,7 @@ class Hud:
         self.resources_surface.fill(self.hud_colour)
 
         self.build_surface = pg.Surface((width * 0.15, height * 0.25), pg.SRCALPHA)
-        self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.84, self.height * 0.74))
+        self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.85, self.height * 0.75))
         self.build_surface.fill(self.hud_colour)
 
         self.select_surface = pg.Surface((width * 0.3, height * 0.2), pg.SRCALPHA)
@@ -32,13 +32,13 @@ class Hud:
         self.examined_tile = None
 
     def create_build_hud(self):
-        render_pos = [self.width * 0.84 + 10, self.height * 0.74 + 10]
+        render_pos = [self.width * 0.85 + 10, self.height * 0.75 + 10]
         object_width = self.build_surface.get_width() // 5
 
         tiles = []
 
+        i = 0
         for image_name, image in self.images.items():
-
             pos = render_pos.copy()
             image_tmp = image.copy()
             image_scale = self.scale_image(image_tmp, w=object_width)
@@ -54,7 +54,13 @@ class Hud:
                 }
             )
 
-            render_pos[0] += image_scale.get_width()
+            if i == 3:
+                render_pos[0] = self.width * 0.85 + 10
+                render_pos[1] += (image_scale.get_height() * 2)
+                i = 0
+            else:
+                render_pos[0] += (image_scale.get_width() + 10)
+                i += 1
 
         return tiles
 
@@ -77,7 +83,6 @@ class Hud:
 
     def draw(self, screen):
         screen.blit(self.resources_surface, (0, 0))
-        screen.blit(self.build_surface, (self.width * 0.84, self.height * 0.74))
         if self.examined_tile is not None:
             w, h = self.select_rect.width, self.select_rect.height
             screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
@@ -86,11 +91,7 @@ class Hud:
             screen.blit(img_scale, (self.width * 0.35 + 40, self.height * 0.79 + 40))
             draw_text(screen, self.examined_tile.name.capitalize(), self.config["font_size"]["h1"], self.config["color"]["white"], self.select_rect.topleft)
 
-        for tile in self.tiles:
-            icon = tile["icon"].copy()
-            if not tile["affordable"]:
-                icon.set_alpha(100)
-            screen.blit(icon, tile["rect"].topleft)
+        self.draw_building_hud(screen)
 
         pos = self.width - 400
         for resource, resource_value in self.resource_manager.resources.items():
@@ -98,13 +99,24 @@ class Hud:
             draw_text(screen, txt.capitalize(), self.config["font_size"]["h3"], self.config["color"]["white"], (pos, 0))
             pos += 150
 
+    def draw_building_hud(self, screen):
+        screen.blit(self.build_surface, (self.width * 0.85, self.height * 0.75))
+
+        for tile in self.tiles:
+            icon = tile["icon"].copy()
+            if not tile["affordable"]:
+                icon.set_alpha(100)
+            screen.blit(icon, tile["rect"].topleft)
+
     def load_images(self):
         lumbermill = pg.image.load("assets/graphics/lumbermill.png")
         stonemasonry = pg.image.load("assets/graphics/stonemasonry.png")
+        warehouse = pg.image.load("assets/graphics/warehouse.png")
 
         images = {
             "lumbermill": lumbermill,
             "stonemasonry": stonemasonry,
+            "warehouse": warehouse
         }
 
         return images
