@@ -8,7 +8,10 @@ class Camera:
         self.width = width
         self.height = height
 
-        self.scroll = pg.Vector2(0, 0)
+        self.scroll = pg.Vector2(
+            -(self.config["world_size"]["x"] * self.config["tile_size"] / 2 - self.width / 2),
+            -(self.config["world_size"]["y"] * self.config["tile_size"] / 2 - self.height / 2)
+        )
         self.dx = 0
         self.dy = 0
         self.speed = self.config["camera_speed"]
