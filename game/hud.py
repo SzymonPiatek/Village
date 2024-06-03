@@ -3,9 +3,11 @@ from game.utils import draw_text
 
 
 class Hud:
-    def __init__(self, width, height):
+    def __init__(self, resource_manager, width, height):
         self.width = width
         self.height = height
+
+        self.resource_manager = resource_manager
 
         self.hud_colour = (198, 155, 93, 175)
 
@@ -45,7 +47,8 @@ class Hud:
                     "name": image_name,
                     "icon": image_scale,
                     "image": self.images[image_name],
-                    "rect": rect
+                    "rect": rect,
+                    "affordable": True
                 }
             )
 
@@ -61,7 +64,12 @@ class Hud:
             self.selected_tile = None
 
         for tile in self.tiles:
-            if tile["rect"].collidepoint(mouse_pos):
+            if self.resource_manager.is_affordable(tile["name"]):
+                tile["affordable"] = True
+            else:
+                tile["affordable"] = False
+
+            if tile["rect"].collidepoint(mouse_pos) and tile["affordable"]:
                 if mouse_action[0]:
                     self.selected_tile = tile
 
@@ -75,14 +83,17 @@ class Hud:
             img_scale = self.scale_image(img, h=h*0.7)
             screen.blit(img_scale, (self.width * 0.35 + 10, self.height * 0.79 + 40))
             draw_text(screen, self.examined_tile.name, 40, (255, 255, 255), self.select_rect.topleft)
-            draw_text(screen, str(self.examined_tile.counter), 30, (255, 255, 255), self.select_rect.center)
 
         for tile in self.tiles:
-            screen.blit(tile["icon"], tile["rect"].topleft)
+            icon = tile["icon"].copy()
+            if not tile["affordable"]:
+                icon.set_alpha(100)
+            screen.blit(icon, tile["rect"].topleft)
 
         pos = self.width - 400
-        for resource in ["wood:", "stone:", "gold:"]:
-            draw_text(screen, resource, 30, (255, 255, 255), (pos, 0))
+        for resource, resource_value in self.resource_manager.resources.items():
+            txt = resource + ": " + str(resource_value)
+            draw_text(screen, txt, 30, (255, 255, 255), (pos, 0))
             pos += 100
 
     def load_images(self):

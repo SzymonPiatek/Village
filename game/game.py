@@ -5,6 +5,7 @@ from game.settings import *
 from game.utils import draw_text
 from game.camera import Camera
 from game.hud import Hud
+from game.resource_manager import ResourceManager
 
 
 class Game:
@@ -15,8 +16,10 @@ class Game:
 
         self.entities = []
 
-        self.hud = Hud(self.width, self.height)
-        self.world = World(self.entities, self.hud, 100, 100, self.width, self.height)
+        self.resource_manager = ResourceManager()
+
+        self.hud = Hud(self.resource_manager, self.width, self.height)
+        self.world = World(self.resource_manager, self.entities, self.hud, 100, 100, self.width, self.height)
         self.camera = Camera(self.width, self.height)
 
     def run(self):
