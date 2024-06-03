@@ -2,7 +2,7 @@ import pygame as pg
 import random
 from perlin_noise import PerlinNoise
 from game.settings import *
-from game.buildings import Lumbermill, Stonemasonry
+from game.buildings import Lumbermill, Stonemasonry, Warehouse
 
 
 class World:
@@ -69,6 +69,10 @@ class World:
                         self.buildings[grid_pos[0]][grid_pos[1]] = ent
                     elif self.hud.selected_tile["name"] == "stonemasonry":
                         ent = Stonemasonry(render_pos, self.resource_manager)
+                        self.entities.append(ent)
+                        self.buildings[grid_pos[0]][grid_pos[1]] = ent
+                    elif self.hud.selected_tile["name"] == "warehouse":
+                        ent = Warehouse(render_pos, self.resource_manager)
                         self.entities.append(ent)
                         self.buildings[grid_pos[0]][grid_pos[1]] = ent
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True

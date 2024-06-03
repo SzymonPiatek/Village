@@ -1,4 +1,6 @@
 import pygame as pg
+
+from game.buildings import Lumbermill
 from game.utils import draw_text
 from game.settings import configuration
 
@@ -21,7 +23,7 @@ class Hud:
         self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.85, self.height * 0.75))
         self.build_surface.fill(self.hud_colour)
 
-        self.select_surface = pg.Surface((width * 0.3, height * 0.2), pg.SRCALPHA)
+        self.select_surface = pg.Surface((width * 0.3, height * 0.25), pg.SRCALPHA)
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
         self.select_surface.fill(self.hud_colour)
 
@@ -82,17 +84,21 @@ class Hud:
                     self.selected_tile = tile
 
     def draw(self, screen):
-        screen.blit(self.resources_surface, (0, 0))
+        self.draw_examined_tile(screen)
+        self.draw_building_hud(screen)
+        self.draw_resource_hud(screen)
+
+    def draw_examined_tile(self, screen):
         if self.examined_tile is not None:
             w, h = self.select_rect.width, self.select_rect.height
-            screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
+            screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.75))
             img = self.examined_tile.image.copy()
             img_scale = self.scale_image(img, h=h*0.7)
-            screen.blit(img_scale, (self.width * 0.35 + 40, self.height * 0.79 + 40))
+            screen.blit(img_scale, (self.width * 0.35 + 40, self.height * 0.75 + 40))
             draw_text(screen, self.examined_tile.name.capitalize(), self.config["font_size"]["h1"], self.config["color"]["white"], self.select_rect.topleft)
 
-        self.draw_building_hud(screen)
-
+    def draw_resource_hud(self, screen):
+        screen.blit(self.resources_surface, (0, 0))
         pos = self.width - 400
         for resource, resource_value in self.resource_manager.resources.items():
             txt = resource + ": " + str(resource_value)

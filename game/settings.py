@@ -29,5 +29,14 @@ configuration = {
         "start_amount": 0,
     },
 
+    "buildings": {
+        "efficiency": {
+            "lumbermill": 2,
+            "stonemasonry": 3,
+            "warehouse": 1
+        },
+        "resource_cooldown": 3000
+    },
+
     "camera_speed": 25
 }
