@@ -45,10 +45,9 @@ class World:
 
         self.temp_tile = None
         if self.hud.selected_tile is not None:
-
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
 
-            if self.can_place_tile(grid_pos):
+            if self.is_valid_grid_pos(grid_pos) and self.can_place_tile(grid_pos):
                 img = self.hud.selected_tile["image"].copy()
                 img.set_alpha(100)
 
@@ -78,12 +77,15 @@ class World:
         else:
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
 
-            if self.can_place_tile(grid_pos):
+            if self.is_valid_grid_pos(grid_pos) and self.can_place_tile(grid_pos):
                 building = self.buildings[grid_pos[0]][grid_pos[1]]
 
                 if mouse_action[0] and (building is not None):
                     self.examine_tile = grid_pos
                     self.hud.examined_tile = building
+
+    def is_valid_grid_pos(self, grid_pos):
+        return 0 <= grid_pos[0] < self.grid_length_x and 0 <= grid_pos[1] < self.grid_length_y
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles, (camera.scroll.x, camera.scroll.y))
