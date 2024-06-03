@@ -12,7 +12,7 @@ class World:
         self.width = width
         self.height = height
 
-        self.perlin_scale = self.grid_length_x / 2
+        self.perlin_scale = grid_length_x / 2
         self.noise = PerlinNoise(octaves=4, seed=random.randint(0, 100))
 
         self.grass_tiles = pg.Surface(
@@ -25,10 +25,15 @@ class World:
         self.world = self.create_world()
 
         self.temp_tile = None
+        self.examine_tile = None
 
     def update(self, camera):
         mouse_pos = pg.mouse.get_pos()
         mouse_action = pg.mouse.get_pressed()
+
+        if mouse_action[2]:
+            self.examine_tile = None
+            self.hud.examined_tile = None
 
         self.temp_tile = None
         if self.hud.selected_tile is not None:
@@ -54,6 +59,15 @@ class World:
                     self.world[grid_pos[0]][grid_pos[1]]["tile"] = self.hud.selected_tile["name"]
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.hud.selected_tile = None
+        else:
+            grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
+
+            if self.can_place_tile(grid_pos):
+                collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
+
+                if mouse_action[0] and collision:
+                    self.examine_tile = grid_pos
+                    self.hud.examined_tile = self.world[grid_pos[0]][grid_pos[1]]
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles, (camera.scroll.x, camera.scroll.y))
@@ -66,6 +80,14 @@ class World:
                     screen.blit(self.tiles[tile],
                                 (render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
                                  render_pos[1] - (self.tiles[tile].get_height() - TILE_SIZE) + camera.scroll.y))
+                    if self.examine_tile is not None:
+                        if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
+                            mask = pg.mask.from_surface(self.tiles[tile]).outline()
+                            mask = [
+                                (x + render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
+                                 y + render_pos[1] - (self.tiles[tile].get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask
+                            ]
+                            pg.draw.polygon(screen, (255, 255, 255), mask, 3)
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
