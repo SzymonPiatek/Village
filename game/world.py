@@ -2,10 +2,12 @@ import pygame as pg
 import random
 from perlin_noise import PerlinNoise
 from game.settings import *
+from game.buildings import Lumbermill, Stonemasonry
 
 
 class World:
-    def __init__(self, hud, grid_length_x, grid_length_y, width, height):
+    def __init__(self, entities, hud, grid_length_x, grid_length_y, width, height):
+        self.entities = entities
         self.hud = hud
         self.grid_length_x = grid_length_x
         self.grid_length_y = grid_length_y
@@ -23,6 +25,8 @@ class World:
         ).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
+
+        self.buildings = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
@@ -56,18 +60,25 @@ class World:
                 }
 
                 if mouse_action[0] and not collision:
-                    self.world[grid_pos[0]][grid_pos[1]]["tile"] = self.hud.selected_tile["name"]
+                    if self.hud.selected_tile["name"] == "lumbermill":
+                        ent = Lumbermill(render_pos)
+                        self.entities.append(ent)
+                        self.buildings[grid_pos[0]][grid_pos[1]] = ent
+                    elif self.hud.selected_tile["name"] == "stonemasonry":
+                        ent = Stonemasonry(render_pos)
+                        self.entities.append(ent)
+                        self.buildings[grid_pos[0]][grid_pos[1]] = ent
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.hud.selected_tile = None
         else:
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
 
             if self.can_place_tile(grid_pos):
-                collision = self.world[grid_pos[0]][grid_pos[1]]["collision"]
+                building = self.buildings[grid_pos[0]][grid_pos[1]]
 
-                if mouse_action[0] and collision:
+                if mouse_action[0] and (building is not None):
                     self.examine_tile = grid_pos
-                    self.hud.examined_tile = self.world[grid_pos[0]][grid_pos[1]]
+                    self.hud.examined_tile = building
 
     def draw(self, screen, camera):
         screen.blit(self.grass_tiles, (camera.scroll.x, camera.scroll.y))
@@ -86,6 +97,20 @@ class World:
                             mask = [
                                 (x + render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
                                  y + render_pos[1] - (self.tiles[tile].get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask
+                            ]
+                            pg.draw.polygon(screen, (255, 255, 255), mask, 3)
+
+                building = self.buildings[x][y]
+                if building is not None:
+                    screen.blit(building.image,
+                                (render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
+                                 render_pos[1] - (building.image.get_height() - TILE_SIZE) + camera.scroll.y))
+                    if self.examine_tile is not None:
+                        if (x == self.examine_tile[0]) and (y == self.examine_tile[1]):
+                            mask = pg.mask.from_surface(building.image).outline()
+                            mask = [
+                                (x + render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
+                                 y + render_pos[1] - (building.image.get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask
                             ]
                             pg.draw.polygon(screen, (255, 255, 255), mask, 3)
 
