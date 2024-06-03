@@ -1,15 +1,17 @@
 import pygame as pg
 from game.utils import draw_text
+from game.settings import configuration
 
 
 class Hud:
     def __init__(self, resource_manager, width, height):
+        self.config = configuration
         self.width = width
         self.height = height
 
         self.resource_manager = resource_manager
 
-        self.hud_colour = (198, 155, 93, 175)
+        self.hud_colour = self.config["color"]["hud"]
 
         self.resources_surface = pg.Surface((width, height * 0.02), pg.SRCALPHA)
         self.resources_rect = self.resources_surface.get_rect(topleft=(0, 0))

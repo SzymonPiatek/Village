@@ -1,15 +1,17 @@
 import pygame as pg
+from game.settings import configuration
 
 
 class Camera:
     def __init__(self, width, height):
+        self.config = configuration
         self.width = width
         self.height = height
 
         self.scroll = pg.Vector2(0, 0)
         self.dx = 0
         self.dy = 0
-        self.speed = 25
+        self.speed = self.config["camera_speed"]
 
     def update(self):
         mouse_pos = pg.mouse.get_pos()

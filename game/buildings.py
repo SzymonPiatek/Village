@@ -16,6 +16,7 @@ class Lumbermill:
             self.resource_manager.resources["wood"] += 1
             self.resource_cooldown = now
 
+
 class Stonemasonry:
     def __init__(self, pos, resource_manager):
         self.image = pg.image.load("assets/graphics/building02.png").convert_alpha()

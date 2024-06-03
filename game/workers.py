@@ -3,16 +3,19 @@ import random
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
+from game.settings import configuration
 
 
 class Worker:
     def __init__(self, tile, world):
+        self.config = configuration
         self.world = world
         self.world.entities.append(self)
         self.name = "worker"
         image = pg.image.load("assets/graphics/worker.png").convert_alpha()
         self.image = pg.transform.scale(image, (image.get_width()*2, image.get_height()*2))
         self.tile = tile
+        self.speed = self.config["worker"]["speed"]
 
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
         self.move_timer = pg.time.get_ticks()
@@ -41,7 +44,7 @@ class Worker:
 
     def update(self):
         now = pg.time.get_ticks()
-        if now - self.move_timer > 1000:
+        if (now - self.move_timer) > (1000 // self.speed):
             new_pos = self.path[self.path_index]
             self.change_tile(new_pos)
             self.path_index += 1
