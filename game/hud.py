@@ -54,7 +54,7 @@ class Hud:
                 }
             )
 
-            render_pos[0] += image_scale.get_width() + 10
+            render_pos[0] += image_scale.get_width()
 
         return tiles
 
@@ -83,8 +83,8 @@ class Hud:
             screen.blit(self.select_surface, (self.width * 0.35, self.height * 0.79))
             img = self.examined_tile.image.copy()
             img_scale = self.scale_image(img, h=h*0.7)
-            screen.blit(img_scale, (self.width * 0.35 + 10, self.height * 0.79 + 40))
-            draw_text(screen, self.examined_tile.name, 40, (255, 255, 255), self.select_rect.topleft)
+            screen.blit(img_scale, (self.width * 0.35 + 40, self.height * 0.79 + 40))
+            draw_text(screen, self.examined_tile.name.capitalize(), self.config["font_size"]["h1"], self.config["color"]["white"], self.select_rect.topleft)
 
         for tile in self.tiles:
             icon = tile["icon"].copy()
@@ -95,12 +95,12 @@ class Hud:
         pos = self.width - 400
         for resource, resource_value in self.resource_manager.resources.items():
             txt = resource + ": " + str(resource_value)
-            draw_text(screen, txt, 30, (255, 255, 255), (pos, 0))
-            pos += 100
+            draw_text(screen, txt.capitalize(), self.config["font_size"]["h3"], self.config["color"]["white"], (pos, 0))
+            pos += 150
 
     def load_images(self):
-        lumbermill = pg.image.load("assets/graphics/building01.png")
-        stonemasonry = pg.image.load("assets/graphics/building02.png")
+        lumbermill = pg.image.load("assets/graphics/lumbermill.png")
+        stonemasonry = pg.image.load("assets/graphics/stonemasonry.png")
 
         images = {
             "lumbermill": lumbermill,
