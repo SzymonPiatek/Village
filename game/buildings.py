@@ -3,7 +3,7 @@ import pygame as pg
 
 class Lumbermill:
     def __init__(self, pos, resource_manager):
-        self.image = pg.image.load("assets/graphics/building01.png")
+        self.image = pg.image.load("assets/graphics/building01.png").convert_alpha()
         self.name = "lumbermill"
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager
@@ -18,7 +18,7 @@ class Lumbermill:
 
 class Stonemasonry:
     def __init__(self, pos, resource_manager):
-        self.image = pg.image.load("assets/graphics/building02.png")
+        self.image = pg.image.load("assets/graphics/building02.png").convert_alpha()
         self.name = "stonemasonry"
         self.rect = self.image.get_rect(topleft=pos)
         self.resource_manager = resource_manager

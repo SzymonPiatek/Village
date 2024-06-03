@@ -26,8 +26,10 @@ class World:
         ).convert_alpha()
         self.tiles = self.load_images()
         self.world = self.create_world()
+        self.collision_matrix = self.create_collistion_matrix()
 
         self.buildings = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        self.workers = [[None for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
 
         self.temp_tile = None
         self.examine_tile = None
@@ -70,6 +72,7 @@ class World:
                         self.entities.append(ent)
                         self.buildings[grid_pos[0]][grid_pos[1]] = ent
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
+                    self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
                     self.hud.selected_tile = None
         else:
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
@@ -114,6 +117,12 @@ class World:
                                  y + render_pos[1] - (building.image.get_height() - TILE_SIZE) + camera.scroll.y) for x, y in mask
                             ]
                             pg.draw.polygon(screen, (255, 255, 255), mask, 3)
+
+                worker = self.workers[x][y]
+                if worker is not None:
+                    screen.blit(worker.image,
+                                (render_pos[0] + self.grass_tiles.get_width() / 2 + camera.scroll.x,
+                                 render_pos[1] - (worker.image.get_height() - TILE_SIZE) + camera.scroll.y))
 
         if self.temp_tile is not None:
             iso_poly = self.temp_tile["iso_poly"]
@@ -188,6 +197,14 @@ class World:
         }
 
         return output
+
+    def create_collistion_matrix(self):
+        collistion_matrix = [[1 for x in range(self.grid_length_x)] for y in range(self.grid_length_y)]
+        for x in range(self.grid_length_x):
+            for y in range(self.grid_length_y):
+                if self.world[x][y]["collision"]:
+                    collistion_matrix[y][x] = 0
+        return collistion_matrix
 
     def cart_to_iso(self, x, y):
         iso_x = x - y
