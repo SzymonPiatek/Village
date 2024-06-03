@@ -62,22 +62,21 @@ class World:
                     "collision": collision
                 }
 
-                if mouse_action[0] and not collision:
-                    if self.hud.selected_tile["name"] == "lumbermill":
-                        ent = Lumbermill(render_pos, self.resource_manager)
+                if mouse_action[0] and not collision and self.hud.selected_tile["affordable"]:
+                    if self.hud.selected_tile["name"] in ["lumbermill", "stonemasonry", "warehouse"]:
+                        if self.hud.selected_tile["name"] == "lumbermill":
+                            ent = Lumbermill(render_pos, self.resource_manager)
+                        elif self.hud.selected_tile["name"] == "stonemasonry":
+                            ent = Stonemasonry(render_pos, self.resource_manager)
+                        elif self.hud.selected_tile["name"] == "warehouse":
+                            ent = Warehouse(render_pos, self.resource_manager)
+
                         self.entities.append(ent)
                         self.buildings[grid_pos[0]][grid_pos[1]] = ent
-                    elif self.hud.selected_tile["name"] == "stonemasonry":
-                        ent = Stonemasonry(render_pos, self.resource_manager)
-                        self.entities.append(ent)
-                        self.buildings[grid_pos[0]][grid_pos[1]] = ent
-                    elif self.hud.selected_tile["name"] == "warehouse":
-                        ent = Warehouse(render_pos, self.resource_manager)
-                        self.entities.append(ent)
-                        self.buildings[grid_pos[0]][grid_pos[1]] = ent
+
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
-                    self.hud.selected_tile = None
+                    # self.hud.selected_tile = None
         else:
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
 
