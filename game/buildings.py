@@ -63,8 +63,8 @@ class Warehouse(Building):
             description="Magazynuje przedmioty",
             pos=pos,
             resources={
-              f"{match_resource("wood")}": 0,
-              f"{match_resource("stone")}": 0
+              "wood": 0,
+              "stone": 0
             },
             resource_manager=resource_manager
         )

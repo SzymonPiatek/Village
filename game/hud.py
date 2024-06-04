@@ -160,7 +160,7 @@ class Hud:
                 for resource, resource_amount in self.examined_tile.resources.items():
                     draw_text(
                         screen,
-                        f"{resource}: {resource_amount}",
+                        f"{match_resource(resource)}: {resource_amount}",
                         self.config["font_size"]["h4"],
                         self.config["color"]["white"],
                         (self.selected_tile_hud.start_pos[0] + padding * 2 + img_scale.get_width(),
