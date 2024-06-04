@@ -193,9 +193,9 @@ class Hud:
 
     def load_images(self):
         images = {
-            "lumbermill": self.assets["lumbermill"].convert_alpha(),
-            "stonemasonry": self.assets["stonemasonry"].convert_alpha(),
-            "warehouse": self.assets["warehouse"].convert_alpha()
+            "lumbermill": self.assets["lumbermill"]["image"].convert_alpha(),
+            "stonemasonry": self.assets["stonemasonry"]["image"].convert_alpha(),
+            "warehouse": self.assets["warehouse"]["image"].convert_alpha()
         }
 
         return images

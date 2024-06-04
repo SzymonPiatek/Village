@@ -27,17 +27,16 @@ configuration = {
     },
 
     "worker": {
-        "speed": 2,
         "start_amount": 10,
     },
 
     "buildings": {
-        "efficiency": {
-            "lumbermill": 2,
-            "stonemasonry": 3,
-            "warehouse": 1
-        },
         "resource_cooldown": 3000
+    },
+
+    "start_resources": {
+        "wood": 10,
+        "stone": 10,
     },
 
     "camera_speed": 25

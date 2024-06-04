@@ -1,26 +1,18 @@
 import pygame as pg
+from game.assets import assets
+from game.settings import configuration
 
 
 class ResourceManager:
     def __init__(self):
-        self.resources = {
-            "wood": 10,
-            "stone": 10
-        }
+        self.config = configuration
+        self.assets = assets
+        self.resources = self.config["start_resources"]
 
         self.costs = {
-            "lumbermill": {
-                "wood": 7,
-                "stone": 3
-            },
-            "stonemasonry": {
-                "wood": 3,
-                "stone": 5
-            },
-            "warehouse": {
-                "wood": 5,
-                "stone": 5
-            }
+            "lumbermill": self.assets["lumbermill"]["buy_cost"],
+            "stonemasonry": self.assets["stonemasonry"]["buy_cost"],
+            "warehouse": self.assets["warehouse"]["buy_cost"],
         }
 
     def apply_cost_to_resource(self, building):

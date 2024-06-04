@@ -1,4 +1,5 @@
 import pygame as pg
+from game.assets import assets
 
 
 def draw_text(screen, text, size, color, pos):

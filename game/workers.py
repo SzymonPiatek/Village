@@ -14,10 +14,10 @@ class Worker:
         self.world = world
         self.world.entities.append(self)
         self.name = "worker"
-        image = self.assets[self.name]
+        image = self.assets[self.name]["image"].convert_alpha()
         self.image = pg.transform.scale(image, (image.get_width()*2, image.get_height()*2))
         self.tile = tile
-        self.speed = self.config["worker"]["speed"]
+        self.speed = self.assets["worker"]["speed"]
 
         self.world.workers[tile["grid"][0]][tile["grid"][1]] = self
         self.move_timer = pg.time.get_ticks()

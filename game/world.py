@@ -233,9 +233,9 @@ class World:
 
     def load_images(self):
         images = {
-            "tree": self.assets["tree"].convert_alpha(),
-            "rock": self.assets["rock"].convert_alpha(),
-            "block": self.assets["block"].convert_alpha()
+            "tree": self.assets["tree"]["image"].convert_alpha(),
+            "rock": self.assets["rock"]["image"].convert_alpha(),
+            "block": self.assets["block"]["image"].convert_alpha()
         }
 
         return images
