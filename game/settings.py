@@ -1,5 +1,5 @@
 configuration = {
-    "fullscreen": False,
+    "fullscreen": True,
 
     "tile_size": 64,
 
@@ -27,8 +27,8 @@ configuration = {
     },
 
     "worker": {
-        "speed": 1,
-        "start_amount": 0,
+        "speed": 2,
+        "start_amount": 10,
     },
 
     "buildings": {
