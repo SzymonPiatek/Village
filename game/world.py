@@ -3,11 +3,13 @@ import random
 from perlin_noise import PerlinNoise
 from game.settings import *
 from game.buildings import Lumbermill, Stonemasonry, Warehouse
+from game.assets import assets
 
 
 class World:
     def __init__(self, resource_manager, entities, hud, grid_length_x, grid_length_y, width, height):
         self.config = configuration
+        self.assets = assets
         self.resource_manager = resource_manager
         self.entities = entities
         self.hud = hud
@@ -230,14 +232,10 @@ class World:
         return grid_x, grid_y
 
     def load_images(self):
-        block = pg.image.load("assets/graphics/block.png").convert_alpha()
-        rock = pg.image.load("assets/graphics/rock.png").convert_alpha()
-        tree = pg.image.load("assets/graphics/tree.png").convert_alpha()
-
         images = {
-            "tree": tree,
-            "rock": rock,
-            "block": block
+            "tree": self.assets["tree"].convert_alpha(),
+            "rock": self.assets["rock"].convert_alpha(),
+            "block": self.assets["block"].convert_alpha()
         }
 
         return images

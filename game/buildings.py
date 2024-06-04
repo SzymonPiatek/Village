@@ -1,12 +1,14 @@
 import pygame as pg
-from game.settings import *
+from game.settings import configuration
+from game.assets import assets
 
 
 class Building:
     def __init__(self, name=None, resource=None, pos=None, resource_manager=None):
         self.config = configuration
+        self.assets = assets
         self.name = name
-        self.image = pg.image.load(f"assets/graphics/{self.name}.png").convert_alpha() if self.name else None
+        self.image = self.assets[name] if self.name else None
         self.rect = self.image.get_rect(topleft=pos)
         self.resource = resource
         self.resource_manager = resource_manager

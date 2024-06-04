@@ -3,6 +3,7 @@ import pygame as pg
 from game.buildings import Lumbermill
 from game.utils import draw_text
 from game.settings import configuration
+from game.assets import assets
 
 
 class HudComponent:
@@ -21,6 +22,7 @@ class HudComponent:
 class Hud:
     def __init__(self, resource_manager, width, height):
         self.config = configuration
+        self.assets = assets
         self.width = width
         self.height = height
 
@@ -115,14 +117,26 @@ class Hud:
             img = self.examined_tile.image.copy()
             img_scale = self.scale_image(img, h=h*0.7)
             screen.blit(img_scale, (self.width - w, self.height - 300))
-            draw_text(screen, self.examined_tile.name.capitalize(), self.config["font_size"]["h1"], self.config["color"]["white"], self.selected_tile_hud.rect.topleft)
+            draw_text(
+                screen,
+                self.examined_tile.name.capitalize(),
+                self.config["font_size"]["h1"],
+                self.config["color"]["white"],
+                self.selected_tile_hud.rect.topleft
+            )
 
     def draw_resource_hud(self, screen):
         screen.blit(self.resources_hud.surface, (0, 0))
         pos = self.width - 400
         for resource, resource_value in self.resource_manager.resources.items():
             txt = resource + ": " + str(resource_value)
-            draw_text(screen, txt.capitalize(), self.config["font_size"]["h3"], self.config["color"]["white"], (pos, 0))
+            draw_text(
+                screen,
+                txt.capitalize(),
+                self.config["font_size"]["h3"],
+                self.config["color"]["white"],
+                (pos, 0)
+            )
             pos += 150
 
     def draw_building_hud(self, screen):
@@ -135,14 +149,10 @@ class Hud:
             screen.blit(icon, tile["rect"].topleft)
 
     def load_images(self):
-        lumbermill = pg.image.load("assets/graphics/lumbermill.png")
-        stonemasonry = pg.image.load("assets/graphics/stonemasonry.png")
-        warehouse = pg.image.load("assets/graphics/warehouse.png")
-
         images = {
-            "lumbermill": lumbermill,
-            "stonemasonry": stonemasonry,
-            "warehouse": warehouse
+            "lumbermill": self.assets["lumbermill"].convert_alpha(),
+            "stonemasonry": self.assets["stonemasonry"].convert_alpha(),
+            "warehouse": self.assets["warehouse"].convert_alpha()
         }
 
         return images

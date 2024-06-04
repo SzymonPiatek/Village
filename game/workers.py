@@ -4,15 +4,17 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 from game.settings import configuration
+from game.assets import assets
 
 
 class Worker:
     def __init__(self, tile, world):
         self.config = configuration
+        self.assets = assets
         self.world = world
         self.world.entities.append(self)
         self.name = "worker"
-        image = pg.image.load("assets/graphics/worker.png").convert_alpha()
+        image = self.assets[name]
         self.image = pg.transform.scale(image, (image.get_width()*2, image.get_height()*2))
         self.tile = tile
         self.speed = self.config["worker"]["speed"]
