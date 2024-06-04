@@ -76,7 +76,6 @@ class World:
 
                     self.world[grid_pos[0]][grid_pos[1]]["collision"] = True
                     self.collision_matrix[grid_pos[1]][grid_pos[0]] = 0
-                    # self.hud.selected_tile = None
         else:
             grid_pos = self.mouse_to_grid(mouse_pos[0], mouse_pos[1], camera.scroll)
 
@@ -245,7 +244,7 @@ class World:
 
     def can_place_tile(self, grid_pos):
         mouse_on_panel = False
-        for rect in [self.hud.resources_rect, self.hud.build_rect, self.hud.select_rect]:
+        for rect in [self.hud.resources_hud.rect, self.hud.buildings_hud.rect, self.hud.selected_tile_hud.rect]:
             if rect.collidepoint(pg.mouse.get_pos()):
                 mouse_on_panel = True
         world_bounds = (0 <= grid_pos[0] <= self.grid_length_x) and (0 <= grid_pos[1] <= self.grid_length_x)
