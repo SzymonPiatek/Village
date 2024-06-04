@@ -7,3 +7,9 @@ def draw_text(screen, text, size, color, pos):
     text_rect = text_surface.get_rect(topleft=pos)
 
     screen.blit(text_surface, text_rect)
+
+
+def match_resource(resource):
+    match resource:
+        case "wood": return "Drewno"
+        case "stone": return "Kamień"

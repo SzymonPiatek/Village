@@ -1,7 +1,7 @@
 import pygame as pg
 import random
 from perlin_noise import PerlinNoise
-from game.settings import *
+from game.settings import configuration
 from game.buildings import Lumbermill, Stonemasonry, Warehouse
 from game.assets import assets
 

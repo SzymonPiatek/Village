@@ -1,7 +1,6 @@
 import pygame as pg
-
 from game.buildings import Lumbermill
-from game.utils import draw_text
+from game.utils import draw_text, match_resource
 from game.settings import configuration
 from game.assets import assets
 
@@ -13,10 +12,14 @@ class HudComponent:
         self.width = width
         self.height = height
         self.start_pos = start_pos
+        self.color = color
 
+        self.create_surface()
+
+    def create_surface(self):
         self.surface = pg.Surface((self.width, self.height), pg.SRCALPHA)
         self.rect = self.surface.get_rect(topleft=self.start_pos)
-        self.surface.fill(color)
+        self.surface.fill(self.color)
 
 
 class Hud:
@@ -112,24 +115,64 @@ class Hud:
 
     def draw_examined_tile_hud(self, screen):
         if self.examined_tile is not None:
-            w, h = self.selected_tile_hud.rect.width, self.selected_tile_hud.rect.height
-            screen.blit(self.selected_tile_hud.surface, (0, self.height - 300))
+            h = self.selected_tile_hud.height
             img = self.examined_tile.image.copy()
-            img_scale = self.scale_image(img, h=h*0.7)
-            screen.blit(img_scale, (self.width - w, self.height - 300))
+            img_scale = self.scale_image(img, h=h * 0.7)
+
+            padding = int((h - img_scale.get_height()) // 2)
+            new_width = img_scale.get_width() + padding * 2 + 300
+
+            self.selected_tile_hud.width = new_width
+            self.selected_tile_hud.create_surface()
+
+            screen.blit(self.selected_tile_hud.surface, (0, self.height - 300))
+
+            screen.blit(img_scale,
+                        (self.selected_tile_hud.start_pos[0] + padding, self.selected_tile_hud.start_pos[1] + padding))
+
             draw_text(
                 screen,
-                self.examined_tile.name.capitalize(),
+                self.examined_tile.display_name,
                 self.config["font_size"]["h1"],
                 self.config["color"]["white"],
-                self.selected_tile_hud.rect.topleft
+                (self.selected_tile_hud.start_pos[0] + padding * 2 + img_scale.get_width(),
+                 self.selected_tile_hud.start_pos[1] + int(padding // 4))
             )
+            draw_text(
+                screen,
+                self.examined_tile.description,
+                self.config["font_size"]["h4"],
+                self.config["color"]["white"],
+                (self.selected_tile_hud.start_pos[0] + padding * 2 + img_scale.get_width(),
+                 self.selected_tile_hud.start_pos[1] + int(padding // 4) + padding)
+            )
+            if self.examined_tile.resource:
+                draw_text(
+                    screen,
+                    self.examined_tile.generate_efficiency(),
+                    self.config["font_size"]["h4"],
+                    self.config["color"]["white"],
+                    (self.selected_tile_hud.start_pos[0] + padding * 2 + img_scale.get_width(),
+                     self.selected_tile_hud.start_pos[1] + int(padding // 4) + padding * 2)
+                )
+            elif self.examined_tile.resources:
+                i = 3
+                for resource, resource_amount in self.examined_tile.resources.items():
+                    draw_text(
+                        screen,
+                        f"{resource}: {resource_amount}",
+                        self.config["font_size"]["h4"],
+                        self.config["color"]["white"],
+                        (self.selected_tile_hud.start_pos[0] + padding * 2 + img_scale.get_width(),
+                         self.selected_tile_hud.start_pos[1] + int(padding // 4) + padding * i)
+                    )
+                    i += 1
 
     def draw_resource_hud(self, screen):
         screen.blit(self.resources_hud.surface, (0, 0))
         pos = self.width - 400
         for resource, resource_value in self.resource_manager.resources.items():
-            txt = resource + ": " + str(resource_value)
+            txt = match_resource(resource) + ": " + str(resource_value)
             draw_text(
                 screen,
                 txt.capitalize(),

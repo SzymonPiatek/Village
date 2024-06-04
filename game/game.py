@@ -1,7 +1,7 @@
 import pygame as pg
 import sys
 from game.world import World
-from game.settings import *
+from game.settings import configuration
 from game.utils import draw_text
 from game.camera import Camera
 from game.hud import Hud

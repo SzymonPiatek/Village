@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 assets_dir = "assets/"
 graphics_dir = assets_dir + "graphics/"
 
