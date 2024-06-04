@@ -1,4 +1,6 @@
 configuration = {
+    "fullscreen": False,
+
     "tile_size": 64,
 
     "color": {

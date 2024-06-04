@@ -13,19 +13,17 @@ class Hud:
 
         self.resource_manager = resource_manager
 
-        self.hud_colour = self.config["color"]["hud"]
-
-        self.resources_surface = pg.Surface((width, height * 0.02), pg.SRCALPHA)
+        self.resources_surface = pg.Surface((width, 20), pg.SRCALPHA)
         self.resources_rect = self.resources_surface.get_rect(topleft=(0, 0))
-        self.resources_surface.fill(self.hud_colour)
+        self.resources_surface.fill(self.config["color"]["hud"])
 
-        self.build_surface = pg.Surface((width * 0.15, height * 0.25), pg.SRCALPHA)
-        self.build_rect = self.build_surface.get_rect(topleft=(self.width * 0.85, self.height * 0.75))
-        self.build_surface.fill(self.hud_colour)
+        self.build_surface = pg.Surface((300, 300), pg.SRCALPHA)
+        self.build_rect = self.build_surface.get_rect(bottomright=(0, 0))
+        self.build_surface.fill(self.config["color"]["hud"])
 
         self.select_surface = pg.Surface((width * 0.3, height * 0.25), pg.SRCALPHA)
         self.select_rect = self.select_surface.get_rect(topleft=(self.width * 0.35, self.height * 0.79))
-        self.select_surface.fill(self.hud_colour)
+        self.select_surface.fill(self.config["color"]["hud"])
 
         self.images = self.load_images()
         self.tiles = self.create_build_hud()
@@ -34,8 +32,8 @@ class Hud:
         self.examined_tile = None
 
     def create_build_hud(self):
-        render_pos = [self.width * 0.85 + 10, self.height * 0.75 + 10]
-        object_width = self.build_surface.get_width() // 5
+        render_pos = [self.width - 300 + 10, self.height - 300 + 10]
+        object_width = (self.build_surface.get_width() - 40) // 3
 
         tiles = []
 
@@ -106,7 +104,7 @@ class Hud:
             pos += 150
 
     def draw_building_hud(self, screen):
-        screen.blit(self.build_surface, (self.width * 0.85, self.height * 0.75))
+        screen.blit(self.build_surface, (self.width - 300, self.height - 300))
 
         for tile in self.tiles:
             icon = tile["icon"].copy()

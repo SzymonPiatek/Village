@@ -67,6 +67,7 @@ class Game:
     def update(self):
         for e in self.entities:
             e.update()
+
         self.camera.update()
         self.hud.update()
         self.world.update(self.camera)
